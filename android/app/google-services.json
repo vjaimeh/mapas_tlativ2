@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "442104091",
+    "project_id": "ttland-31ccf",
+    "storage_bucket": "ttland-31ccf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442104091:android:f712e5d9668ce889553bbe",
+        "android_client_info": {
+          "package_name": "com.example.mapas_tlati"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "442104091-jkaa15osehva5ttpfnc2qji40tu1nnqj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mapas_tlati",
+            "certificate_hash": "bf945878f7ced4e0f603bc09ceae7f85398d395a"
+          }
+        },
+        {
+          "client_id": "442104091-3dl1h553s1bil7lkpch3mhgksd60ffh7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7EJtCy-4bBxH2cnBRM22OBwSduTd2-90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "442104091-3dl1h553s1bil7lkpch3mhgksd60ffh7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
