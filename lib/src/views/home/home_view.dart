@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart'; /*LIBRERIA PARA BLOQUEAR LA ROTACION*/
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:mapas_tlati/src/controllers/home_controller.dart';
 
@@ -25,8 +26,14 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+     /*INICIO, CODIGO PARA BLOQUEAR LA ROTACION*/
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);/*FIN, CODIGO PARA BLOQUEAR LA ROTACION*/
+
     return Scaffold(
-      body:  SingleChildScrollView(
+      body:  SafeArea(
         child: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -48,7 +55,7 @@ class _HomeViewState extends State<HomeView> {
               _imageTypeUser(context,'assets/img/driver.png', 'driver'),
               const SizedBox(height: 10),
               _textTypeUser('Conductor'),
-              SizedBox(height: MediaQuery.of(context).size.height * .14),
+
             ],
           ),
         ),

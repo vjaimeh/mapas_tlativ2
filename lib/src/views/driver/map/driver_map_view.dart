@@ -13,7 +13,7 @@ class DriverMapView extends StatefulWidget {
 }
 
 class _DriverMapViewState extends State<DriverMapView> {
-  DriverMapController _con = DriverMapController();
+  final DriverMapController _con = DriverMapController();
 
   @override
   void initState() {
@@ -25,10 +25,20 @@ class _DriverMapViewState extends State<DriverMapView> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    print('Se ejecuto el dispose');
+
+    _con.dispose();
+  }
+
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _con.key,
+      drawer: _drawer(),
       body: Stack(
         children: [
           _googleMapsWidget(),
@@ -49,12 +59,74 @@ class _DriverMapViewState extends State<DriverMapView> {
     );
   }
 
+  //Drawer
+  // ignore: unused_element
+  Widget _drawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  child: const Text(
+                    'Nombre de Usario',
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                  ),
+                ),
+                Container(
+                  child: const Text(
+                    'Email',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const CircleAvatar(
+                  backgroundImage: AssetImage('assets/img/profile.jpg'),
+                  radius: 40,
+                )
+              ],
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.amber,
+            ),
+          ),
+          ListTile(
+            title: Text('Editar perfil'),
+            trailing: Icon(Icons.edit),
+            onTap: () {},
+          ),
+          ListTile(
+            title: const Text('Cerrar Secion'),
+            trailing: const Icon(Icons.power_settings_new),
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  //drawer fin
+
   Widget _buttonDrawer() {
     return Container(
       alignment: Alignment.center,
       child: IconButton(
-        onPressed: () {},
-        icon: Icon(
+        onPressed: _con.openDrawer,
+        icon: const Icon(
           Icons.menu,
           color: Colors.white,
         ),
@@ -86,11 +158,10 @@ class _DriverMapViewState extends State<DriverMapView> {
       alignment: Alignment.bottomCenter,
       margin: EdgeInsets.symmetric(horizontal: 60, vertical: 30),
       child: ButtonApp(
-        text: 'Conectarse',
-        color: Colors.amber,
+        onPressed: _con.connect,
+        text: _con.isConnect ? 'DESCONECTARSE' : 'CONECTARSE',
+        color: _con.isConnect ? Colors.grey : Colors.amber,
         textColor: Colors.black,
-        onPressed: () {},
-        //onPressed:,
       ),
     );
   }

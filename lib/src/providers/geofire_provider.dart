@@ -7,9 +7,14 @@ class GeoFireProvider {
   late Geoflutterfire _geo;
 
   GeoFireProvider() {
-    _ref = FirebaseFirestore.instance.collection('locations');
+    _ref = FirebaseFirestore.instance.collection('Locations');
     _geo = Geoflutterfire();
   }
+
+  Stream<DocumentSnapshot> getLocationByIdSteam(String id) {
+    return _ref.doc(id).snapshots(includeMetadataChanges: true);
+  }
+
   Future<void> create(String id, double lat, double lng) {
     GeoFirePoint myLocation = _geo.point(latitude: lat, longitude: lng);
     return _ref
@@ -18,6 +23,6 @@ class GeoFireProvider {
   }
 
   Future<void> delete(String id) {
-    return _ref.doc().delete();
+    return _ref.doc(id).delete();
   }
 }

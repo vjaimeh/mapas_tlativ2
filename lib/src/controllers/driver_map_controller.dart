@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/widgets.dart';
@@ -6,7 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
 import 'package:mapas_tlati/src/providers/auth_provider.dart';
 import 'package:mapas_tlati/src/providers/geofire_provider.dart';
+import 'package:mapas_tlati/src/utils/my_progress_dialog.dart';
 import 'package:mapas_tlati/src/utils/snackbar.dart' as utils;
+import 'package:progress_dialog/progress_dialog.dart';
 
 class DriverMapController {
   late BuildContext context;
@@ -26,16 +29,30 @@ class DriverMapController {
   late GeoFireProvider _geoFireProvider;
   late AuthProvider _authProvider;
   bool isConnect = false;
+  late ProgressDialog _progressDialog;
+
+  late StreamSubscription<DocumentSnapshot> _statusSuscription;
 
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
     _geoFireProvider = GeoFireProvider();
     _authProvider = AuthProvider();
+    _progressDialog =
+        MyProgresDialog.createProgressDialog(context, 'Conectando ...');
     markerDriver =
         await createMarkerImagenFromAsset('assets/img/taxi_icon.png');
 
     checkGPS();
+  }
+
+  void openDrawer() {
+    key.currentState!.openDrawer();
+  }
+
+  void dispose() {
+    _positionStream.cancel();
+    _statusSuscription.cancel();
   }
 
   void onMapCreated(GoogleMapController controller) {
@@ -47,17 +64,38 @@ class DriverMapController {
   void saveLocation() async {
     await _geoFireProvider.create(
         _authProvider.getUser()!.uid, _position.latitude, _position.longitude);
+    _progressDialog.hide();
   }
 
   void connect() {
     if (isConnect) {
+      // isConnect = false;
       disconnect();
     } else {
+      //isConnect = true;
+      _progressDialog.show();
       updateLocation();
     }
   }
 
-  void disconnect() {}
+  void disconnect() {
+    _positionStream.cancel();
+    _geoFireProvider.delete(_authProvider.getUser()!.uid);
+  }
+
+  void checkIfIsConnect() {
+    Stream<DocumentSnapshot> status =
+        _geoFireProvider.getLocationByIdSteam(_authProvider.getUser()!.uid);
+
+    _statusSuscription = status.listen((DocumentSnapshot document) {
+      if (document.exists) {
+        isConnect = true;
+      } else {
+        isConnect = false;
+      }
+      refresh();
+    });
+  }
 
   void updateLocation() async {
     try {
@@ -100,12 +138,15 @@ class DriverMapController {
     if (isLocationEnable) {
       print('Gps activado');
       updateLocation();
+      checkIfIsConnect();
     } else {
       print('Gps Desactivado');
 
       bool locationGPS = await location.Location().requestService();
       if (locationGPS) {
         updateLocation();
+        checkIfIsConnect();
+
         print('activo el  Gps');
       }
     }
